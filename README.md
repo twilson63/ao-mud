@@ -13,10 +13,10 @@ MODULE_ID = "yf8WSbOVb-7BRY4qEOC90NupAzD4L9ns5phZxBYAc7Y"
 ```lua
 spawn("MODULE_ID", {
   description = "",
-  item-type = "emoji",
-  item-value = "🌟",
-  item-type = "note",
-  item-value = "Good fortune is in room #XYZ",
+  ["item-type"] = "emoji",
+  ["item-value"] = "🌟",
+  ["item-type"] = "note",
+  ["item-value"] = "Good fortune is in room #XYZ",
   door = "XYZ",
   door = "ABC"
 })
