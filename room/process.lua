@@ -1,4 +1,4 @@
-
+ao = require(".ao")
 local process = { _version = "0.0.1" }
 
 function getTagValue(tags, name)
@@ -33,13 +33,13 @@ function init(msg)
       table.insert(rooms, o.value)
     end
   end
-
-
 end
 
 
 function process.handle(msg, env) 
-  if getTagValue(msg.tags, "ao-type") == "spawn" then
+  ao.id = env.process.id
+  ao.clearOutbox()
+  if getTagValue(msg.tags, "ao-type") == "process" then
     init(msg)
     return {
       output = "initialized"
@@ -48,9 +48,7 @@ function process.handle(msg, env)
 
   local action = getTagValue(msg.tags, "action")
   if action == "enter" then
-    return {
-      output = description
-    }
+    ao.send({ body = description }, msg.from)
   end
 
   if action == "look" then
@@ -67,27 +65,36 @@ function process.handle(msg, env)
         details = details .. "- " .. i .. " [" .. o.type .. "] " .. o.value .. "\n"
       end
     end
-    return {
-      output = description .. "\n" .. details
-    }
+    ao.send({
+      body = description .. "\n" .. details
+    }, msg.from)
   end
 
   if action == "take" then
     local id = getTagValue(msg.tags, "item-id")
     if items[id].owner then
-      return {
-        output = "item is taken"
-      }
+      ao.send({body = "item is taken"}, msg.from)
+    else
+      items[id].owner = msg.from
+      ao.send({
+        body = "congrats you grabbed: " .. "[" .. items[id].type .. "] " .. items[id].value
+      }, msg.from)
     end
-    items[id].owner = msg.from
-    return {
-      output = "congrats you grabbed: " .. "[" .. items[id].type .. "] " .. items[id].value
-    }
+  end
+
+  if action == "drop" then
+    local id = getTagValue(msg.tags, "item-id")
+    if items[id].owner and msg.from == items[id].owner then
+      items[id].owner = nil
+      ao.send({
+        body = "you dropped: " .. "[" .. items[id].type .. "] " .. items[id].value
+      }, msg.from)
+    end
   end
   -- do stuff
   local response = {
-    output = "Hello World",
-    messages = {},
+    output = "processed message",
+    messages = ao.outbox.messages,
     spawns = {}
   }
   return response

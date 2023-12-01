@@ -6,7 +6,7 @@ using the room module, we can create ao processes as rooms, that users can enter
 
 > NOTE: Starting simple for now.
 
-MODULE_ID = "yf8WSbOVb-7BRY4qEOC90NupAzD4L9ns5phZxBYAc7Y"
+MODULE_ID = "mTIoiDLD8unvWEV8eI-lVm4yoKwfcIjOvGIMD5xTfno"
 
 ## spawning a room in aos
 
