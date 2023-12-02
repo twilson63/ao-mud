@@ -13,12 +13,13 @@ end
 description = "You are in a dark room, with no hope! ☠️"
 items = {}
 rooms = {}
+setup = false
 
-function init(msg) 
-  description = getTagValue(msg.tags, "description")
+function init(tags) 
+  description = getTagValue(tags, "description")
 
   local item = { type = nil, value = nil, owner = nil }
-  for i, o in ipairs(msg.tags) do
+  for i, o in ipairs(tags) do
     if o.name == "item-type" then
       item.type = o.value
     end
@@ -33,20 +34,21 @@ function init(msg)
       table.insert(rooms, o.value)
     end
   end
+  setup = true
 end
 
 
 function process.handle(msg, env) 
   ao.id = env.process.id
   ao.clearOutbox()
-  if getTagValue(msg.tags, "ao-type") == "process" then
-    init(msg)
-    return {
-      output = "initialized"
-    }
-  end
-
+  
   local action = getTagValue(msg.tags, "action")
+  
+  if action == "setup" and not setup then
+    init(msg.tags)
+    ao.send({ body = "setup room" }, msg.from)
+  end
+  
   if action == "enter" then
     ao.send({ body = description }, msg.from)
   end
@@ -56,7 +58,7 @@ function process.handle(msg, env)
     if #rooms > 0 then
       details = "You have " .. #rooms .. "\n"
       for i, o in ipairs(rooms) do
-        details = details + "room: " .. o .. " \n"
+        details = details .. "door: " .. o .. " \n"
       end
     end
     if #items > 0 then

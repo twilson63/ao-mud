@@ -8,12 +8,17 @@ async function test() {
   const response = await handle(null, {
     target: '1',
     tags: [
-      { name: 'ao-type', value: 'spawn' },
+      { name: 'ao-type', value: 'message' },
+      { name: 'action', value: 'setup' },
       { name: 'description', value: 'A warm bright place' },
       { name: 'item-type', value: 'emoji' },
       { name: 'item-value', value: '⭐️' }
     ]
-  }, { process: { id: "TOM" } })
+  }, {
+    process: {
+      id: "TOM"
+    }
+  })
   const response2 = await handle(response.buffer, {
     target: '1',
     from: "FOO",
@@ -58,4 +63,4 @@ async function test() {
 
 }
 
-test()
+test().catch(e => console.error(e))

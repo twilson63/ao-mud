@@ -6,20 +6,18 @@ using the room module, we can create ao processes as rooms, that users can enter
 
 > NOTE: Starting simple for now.
 
-MODULE_ID = "mTIoiDLD8unvWEV8eI-lVm4yoKwfcIjOvGIMD5xTfno"
+MODULE_ID = "gx58zbM817pvoRNhBEfamL5KGjmcW_LaaBRKmsUQBRI"
+
 
 ## spawning a room in aos
 
 ```lua
-spawn("MODULE_ID", {
-  description = "",
-  ["item-type"] = "emoji",
-  ["item-value"] = "🌟",
-  ["item-type"] = "note",
-  ["item-value"] = "Good fortune is in room #XYZ",
-  door = "XYZ",
-  door = "ABC"
-})
+spawn("gx58zbM817pvoRNhBEfamL5KGjmcW_LaaBRKmsUQBRI", {})
+-- get process id from inbox
+send("SPAWNED_PROCESS_ID", { action = "setup", description = "You have entered the kingdom!" })
+-- spawn a new room
+spawn("gx58zbM817pvoRNhBEfamL5KGjmcW_LaaBRKmsUQBRI", {})
+send("NEW_PROCESS", { action = "setup", description = "Welcome to the two room dungeon", door = "SPAWNED_PROCESS_ID"})
 ```
 
 That should return the room id in your inbox
